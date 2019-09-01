@@ -71,6 +71,7 @@ int switch_type(Type t, bool b, char*&str)
 			str = " %s = %s";
 			break;
 		case Float:
+		case Double:
 			str = " %s = %s";
 			break;
 		case String:
@@ -92,6 +93,7 @@ int switch_type(Type t, bool b, char*&str)
 			str = " ,%s = %s";
 			break;
 		case Float:
+		case Double:
 			str = " ,%s = %s";
 			break;
 		case String:
@@ -112,6 +114,7 @@ int insert_type(Type t, int b, char*&str)
 			str = " %s";
 			break;
 		case Float:
+		case Double:
 			str = " %s";
 			break;
 		case String:
@@ -127,6 +130,7 @@ int insert_type(Type t, int b, char*&str)
 			str = " ,%s";
 			break;
 		case Float:
+		case Double:
 			str = " ,%s";
 			break;
 		case String:
@@ -142,6 +146,7 @@ int insert_type(Type t, int b, char*&str)
 			str = " ,%s)";
 			break;
 		case Float:
+		case Double:
 			str = " ,%s)";
 			break;
 		case String:
@@ -152,7 +157,7 @@ int insert_type(Type t, int b, char*&str)
 	return 0;
 }
 
-/*´´½¨×Ö¶Î¶ÔÏó*/
+/*åˆ›å»ºå­—æ®µå¯¹è±¡*/
 int new_field(Field** &field, int length)
 {
 	if (field != NULL)
@@ -168,15 +173,16 @@ int new_field(Field** &field, int length)
 		field[i]->value = NULL;
 		field[i]->type = Int;
 	}
-	field[i] = NULL;//Òª¶à¸ö¿ÕNULL×ö½áÎ²
+	field[i] = NULL;//è¦å¤šä¸ªç©ºNULLåšç»“å°¾
 
 	return 0;
 }
 
-/*×Ö¶Î³õÊ¼»¯*/
+/*å­—æ®µåˆå§‹åŒ–*/
 int init_field(Field* &field, char* key, void* value, Type type)
 {
 	unsigned long long *temp_value = NULL;
+	float* float_value = NULL;
 	double* double_value = NULL;
 	int value_length = 0;
 	int key_length = strlen(key) + 1;
@@ -195,12 +201,17 @@ int init_field(Field* &field, char* key, void* value, Type type)
 		case Type::Int:
 			temp_value = (unsigned long long*)value;
 			field->value = new char[32];
-			sprintf_s(field->value, 32, "%d", *temp_value);//ÔÚÏß
+			sprintf_s(field->value, 32, "%d", *temp_value);//åœ¨çº¿
 			break;
 		case Type::Float:
+			float_value = (double*)value;
+			field->value = new char[64];
+			sprintf_s(field->value, 64, "%f", *float_value);//åœ¨çº¿
+			break;
+		case Type::Double:
 			double_value = (double*)value;
 			field->value = new char[64];
-			sprintf_s(field->value, 64, "%f", *double_value);//ÔÚÏß
+			sprintf_s(field->value, 64, "%f", *double_value);
 			break;
 		case Type::StringId:
 			value_length = strlen((char*)value) + 1;
@@ -210,7 +221,7 @@ int init_field(Field* &field, char* key, void* value, Type type)
 		case Type::IntId:
 			temp_value = (unsigned long long*)value;
 			field->value = new char[32];
-			sprintf_s(field->value, 32, "%d", *temp_value);//ÔÚÏß
+			sprintf_s(field->value, 32, "%d", *temp_value);//åœ¨çº¿
 			break;
 		}
 	}
@@ -220,7 +231,7 @@ int init_field(Field* &field, char* key, void* value, Type type)
 	return 0;
 }
 
-/*²âÊÔ´úÂë
+/*æµ‹è¯•ä»£ç 
 Field** field = NULL;
 new_field(field, 3);
 init_field(field[0], table_data->getTable()->equipment_id(), s_equipment_key, String);
@@ -236,7 +247,7 @@ int insert_data(char* tableName, Field** field)
 	MYSQL * sql = get_mysql(); //= my_init((MYSQL*) 0); 
 	if (sql == NULL)
 	{
-		printf("ÇëÁ¬½ÓÊı¾İ¿â!!!\n");
+		printf("è¯·è¿æ¥æ•°æ®åº“!!!\n");
 		return -1;
 	}
 
@@ -256,7 +267,7 @@ int insert_data(char* tableName, Field** field)
 			continue;
 		if (field[i]->value == NULL)
 		{
-			printf("×Ö¶ÎÖµÎª¿ÕÁË !!!\n");
+			printf("å­—æ®µå€¼ä¸ºç©ºäº† !!!\n");
 			return -1;
 		}
 
@@ -281,7 +292,7 @@ int insert_data(char* tableName, Field** field)
 
 		length = strlen(sentence);
 		append_new_buffer(sentence, length, insert, strlen(insert));//SELECT sn_id ,%s 
-		length = strlen(sentence) + strlen(field[i]->key) - 1;//Õı³£ĞèÒª+1£¬ÄÇÃ´°Ñ%sµÄ³¤¶È¶ş¼õÈ¥ÔÙ¼ÓÒ»¾ÍÊÇ-1£»
+		length = strlen(sentence) + strlen(field[i]->key) - 1;//æ­£å¸¸éœ€è¦+1ï¼Œé‚£ä¹ˆæŠŠ%sçš„é•¿åº¦äºŒå‡å»å†åŠ ä¸€å°±æ˜¯-1ï¼›
 		char*insert_ = (char*)calloc(length, sizeof(char));
 		sprintf_s(insert_, length, sentence, field[i]->key);////SELECT sn_id ,na_id 
 		if (sentence != NULL)
@@ -292,7 +303,7 @@ int insert_data(char* tableName, Field** field)
 
 		length = strlen(bottoms);
 		append_new_buffer(bottoms, length, bottom, strlen(bottom));//SELECT sn_id ,%s 
-		length = strlen(bottoms) + strlen(field[i]->value) - 1;//Õı³£ĞèÒª+1£¬ÄÇÃ´°Ñ%sµÄ³¤¶È¶ş¼õÈ¥ÔÙ¼ÓÒ»¾ÍÊÇ-1£»
+		length = strlen(bottoms) + strlen(field[i]->value) - 1;//æ­£å¸¸éœ€è¦+1ï¼Œé‚£ä¹ˆæŠŠ%sçš„é•¿åº¦äºŒå‡å»å†åŠ ä¸€å°±æ˜¯-1ï¼›
 		char*bottom_ = (char*)calloc(length, sizeof(char));
 		sprintf_s(bottom_, length, bottoms, field[i]->value);////SELECT sn_id ,na_id 
 		if (bottoms != NULL)
@@ -309,13 +320,13 @@ int insert_data(char* tableName, Field** field)
 	if (sentence != NULL) { free(sentence); sentence = NULL; }
 	if (err)
 	{
-		printf("²åÈëÊ±³ö´í: %s !!!\n", mysql_error(sql));
+		printf("æ’å…¥æ—¶å‡ºé”™: %s !!!\n", mysql_error(sql));
 		return -1;
 	}
 	return 0;
 }
 
-/*²âÊÔ´úÂë
+/*æµ‹è¯•ä»£ç 
 Field** field = NULL;
 new_field(field, 1);
 init_field(field[0], table_data->getTable()->id(), &s_equipment_key, IntId);
@@ -327,18 +338,18 @@ int delete_data(char* tableName, Field* field)
 	MYSQL * sql = get_mysql();
 	if (sql == NULL)
 	{
-		printf("ÇëÁ¬½ÓÊı¾İ¿â!!!\n");
+		printf("è¯·è¿æ¥æ•°æ®åº“!!!\n");
 		return -1;
 	}
 
 	if (field == NULL || field->key == NULL)
 	{
-		printf("×Ö¶ÎÃûÎª¿Õ!!!\n");
+		printf("å­—æ®µåä¸ºç©º!!!\n");
 		return -2;
 	}
 	if (field->value == NULL)
 	{
-		printf("×Ö¶ÎÖµÎª¿ÕÁË !!!\n");
+		printf("å­—æ®µå€¼ä¸ºç©ºäº† !!!\n");
 		return -1;
 	}
 
@@ -360,13 +371,13 @@ int delete_data(char* tableName, Field* field)
 	if (sentence_ != NULL) { free(sentence_); sentence_ = NULL; }
 	if (err)
 	{
-		printf("É¾³ıÊ±³ö´í: %s !!!\n", mysql_error(sql));
+		printf("åˆ é™¤æ—¶å‡ºé”™: %s !!!\n", mysql_error(sql));
 		return -1;
 	}
 	return 0;
 }
 
-/*²âÊÔ´úÂë
+/*æµ‹è¯•ä»£ç 
 Field** field = NULL;
 new_field(field, 3);
 init_field(field[0], table_equipment->getTable()->id(), s_equipment_key, StringId);
@@ -381,11 +392,11 @@ int update_data(char* tableName, Field**field)
 	MYSQL * sql = get_mysql();
 	if (sql == NULL)
 	{
-		printf("ÇëÁ¬½ÓÊı¾İ¿â!!!\n");
+		printf("è¯·è¿æ¥æ•°æ®åº“!!!\n");
 		return -1;
 	}
 
-	/*----------------------------------------UPDATE×Ö·û´®Æ´½Óstart--------------------------------------*/
+	/*----------------------------------------UPDATEå­—ç¬¦ä¸²æ‹¼æ¥start--------------------------------------*/
 	char* update = "UPDATE %s SET";
 	int length = strlen(update) + strlen(tableName) - 1;
 	char*sentence = (char*)calloc(length, sizeof(char));
@@ -400,7 +411,7 @@ int update_data(char* tableName, Field**field)
 			continue;
 		if (field[i]->value == NULL)
 		{
-			printf("×Ö¶ÎÖµÎª¿ÕÁË !!!\n");
+			printf("å­—æ®µå€¼ä¸ºç©ºäº† !!!\n");
 			return -1;
 		}
 
@@ -416,13 +427,13 @@ int update_data(char* tableName, Field**field)
 			}
 			else
 			{
-				one = true;//Ê×´Î×Ö·û´®Æ´½ÓÃ»ÓĞ¡®£¬¡¯ºÅ
+				one = true;//é¦–æ¬¡å­—ç¬¦ä¸²æ‹¼æ¥æ²¡æœ‰â€˜ï¼Œâ€™å·
 				switch_type(field[i]->type, true, update);
 			}
 
 			length = strlen(sentence);
 			append_new_buffer(sentence, length, update, strlen(update));//SELECT sn_id ,%s 
-			length = strlen(sentence) + strlen(field[i]->key) + strlen(field[i]->value) - 1;//Õı³£ĞèÒª+1£¬ÄÇÃ´°Ñ%sµÄ³¤¶È¶ş¼õÈ¥ÔÙ¼ÓÒ»¾ÍÊÇ-1£»
+			length = strlen(sentence) + strlen(field[i]->key) + strlen(field[i]->value) - 1;//æ­£å¸¸éœ€è¦+1ï¼Œé‚£ä¹ˆæŠŠ%sçš„é•¿åº¦äºŒå‡å»å†åŠ ä¸€å°±æ˜¯-1ï¼›
 			char*update_ = (char*)calloc(length, sizeof(char));
 			sprintf_s(update_, length, sentence, field[i]->key, field[i]->value);////SELECT sn_id ,na_id 
 			if (sentence != NULL)
@@ -441,19 +452,19 @@ int update_data(char* tableName, Field**field)
 	char*sentence_ = (char*)calloc(length, sizeof(char));
 	sprintf_s(sentence_, length, sentence, field[index]->key, field[index]->value);
 	if (sentence != NULL) { free(sentence); sentence = NULL; }
-	/*-------------------------------------SELECT×Ö·û´®Æ´½Óend-----------------------------------------*/
+	/*-------------------------------------SELECTå­—ç¬¦ä¸²æ‹¼æ¥end-----------------------------------------*/
 
 	int err = mysql_real_query(sql, sentence_, strlen(sentence_));
 	if (sentence_ != NULL) { free(sentence_); sentence_ = NULL; }
 	if (err)
 	{
-		printf("²éÑ¯Ê±³ö´í: %s !!!\n", mysql_error(sql));
+		printf("æŸ¥è¯¢æ—¶å‡ºé”™: %s !!!\n", mysql_error(sql));
 		return -1;
 	}
 	return 0;
 }
 
-/*²âÊÔ´úÂë
+/*æµ‹è¯•ä»£ç 
 Field** field = NULL;
 new_field(field, 2);
 init_field(field[0], table_equipment->getTable()->sn_id(), NULL, Int);
@@ -466,11 +477,11 @@ int selete_data(char* tableName, Field**&field)
 	MYSQL * sql = get_mysql();
 	if (sql == NULL)
 	{
-		printf("ÇëÁ¬½ÓÊı¾İ¿â!!!\n");
+		printf("è¯·è¿æ¥æ•°æ®åº“!!!\n");
 		return -1;
 	}
 
-	/*----------------------------------------SELECT×Ö·û´®Æ´½Óstart--------------------------------------*/
+	/*----------------------------------------SELECTå­—ç¬¦ä¸²æ‹¼æ¥start--------------------------------------*/
 	char* select = "SELECT %s ";
 	int length = strlen(select) + strlen(field[0]->key) - 1;
 	char*sentence = (char*)calloc(length, sizeof(char));
@@ -487,7 +498,7 @@ int selete_data(char* tableName, Field**&field)
 		{
 			if (field[i]->value == NULL)
 			{
-				printf("×Ö¶ÎÖµÎª¿ÕÁË !!!\n");
+				printf("å­—æ®µå€¼ä¸ºç©ºäº† !!!\n");
 				return -1;
 			}
 			index = i;
@@ -519,24 +530,24 @@ int selete_data(char* tableName, Field**&field)
 	char*sentence_ = (char*)calloc(length, sizeof(char));
 	sprintf_s(sentence_, length, sentence, tableName, field[index]->key, field[index]->value);
 	if (sentence != NULL) { free(sentence); sentence = NULL; }
-	/*-------------------------------------SELECT×Ö·û´®Æ´½Óend-----------------------------------------*/
+	/*-------------------------------------SELECTå­—ç¬¦ä¸²æ‹¼æ¥end-----------------------------------------*/
 
 	int err = mysql_real_query(sql, sentence_, length);
 	if (sentence_ != NULL) { free(sentence_); sentence_ = NULL; }
 	if (err)
 	{
-		printf("²éÑ¯Ê±³ö´í: %s !!!\n", mysql_error(sql));
+		printf("æŸ¥è¯¢æ—¶å‡ºé”™: %s !!!\n", mysql_error(sql));
 		return -1;
 	}
 
 	MYSQL_RES *m_res = NULL;
-	m_res = mysql_store_result(sql);//½«½á¹û±£´æÔÚres½á¹¹ÌåÖĞ
-	//Ñ­»·´òÓ¡Ã¿ĞĞÃ¿¸ö×Ö¶Î
+	m_res = mysql_store_result(sql);//å°†ç»“æœä¿å­˜åœ¨resç»“æ„ä½“ä¸­
+	//å¾ªç¯æ‰“å°æ¯è¡Œæ¯ä¸ªå­—æ®µ
 	MYSQL_ROW row = NULL;
 	row = mysql_fetch_row(m_res);
 	if (NULL == row)
 	{
-		printf("Ã»ÓĞ²éÑ¯µ½¶ÔÓ¦µÄÊı¾İ!!!\n");
+		printf("æ²¡æœ‰æŸ¥è¯¢åˆ°å¯¹åº”çš„æ•°æ®!!!\n");
 		return -1;
 	}
 
@@ -560,7 +571,7 @@ int selete_data(char* tableName, Field**&field)
 	return 0;
 }
 
-/*²âÊÔ´úÂë
+/*æµ‹è¯•ä»£ç 
 char**results;
 char**field = new char*[4];
 field[0] = new char[64];
@@ -583,11 +594,11 @@ int selete_data_(char**&result, char* tableName, char* id, char**field)
 	MYSQL * sql = get_mysql();
 	if (sql == NULL)
 	{
-		printf("ÇëÁ¬½ÓÊı¾İ¿â!!!\n");
+		printf("è¯·è¿æ¥æ•°æ®åº“!!!\n");
 		return NULL;
 	}
 
-	/*----------------------------------------SELECT×Ö·û´®Æ´½Óstart--------------------------------------*/
+	/*----------------------------------------SELECTå­—ç¬¦ä¸²æ‹¼æ¥start--------------------------------------*/
 	char* select = "SELECT %s ";
 	int length = strlen(select) + strlen(field[0]) - 1;
 	char*sentence = (char*)calloc(length, sizeof(char));
@@ -617,24 +628,24 @@ int selete_data_(char**&result, char* tableName, char* id, char**field)
 	char*sentence_ = (char*)calloc(length, sizeof(char));
 	sprintf_s(sentence_, length, sentence, tableName, id);
 	if (sentence != NULL) { free(sentence); sentence = NULL; }
-	/*-------------------------------------SELECT×Ö·û´®Æ´½Óend-----------------------------------------*/
+	/*-------------------------------------SELECTå­—ç¬¦ä¸²æ‹¼æ¥end-----------------------------------------*/
 
 	int err = mysql_real_query(sql, sentence_, length);
 	if (sentence_ != NULL) { free(sentence_); sentence_ = NULL; }
 	if (err)
 	{
-		printf("²éÑ¯Ê±³ö´í: %s !!!\n", mysql_error(sql));
+		printf("æŸ¥è¯¢æ—¶å‡ºé”™: %s !!!\n", mysql_error(sql));
 		return -1;
 	}
 
 	MYSQL_RES *m_res = NULL;
-	m_res = mysql_store_result(sql);//½«½á¹û±£´æÔÚres½á¹¹ÌåÖĞ
-	//Ñ­»·´òÓ¡Ã¿ĞĞÃ¿¸ö×Ö¶Î
+	m_res = mysql_store_result(sql);//å°†ç»“æœä¿å­˜åœ¨resç»“æ„ä½“ä¸­
+	//å¾ªç¯æ‰“å°æ¯è¡Œæ¯ä¸ªå­—æ®µ
 	MYSQL_ROW row = NULL;
 	row = mysql_fetch_row(m_res);
 	if (NULL == row)
 	{
-		printf("Ã»ÓĞ²éÑ¯µ½¶ÔÓ¦µÄÊı¾İ!!!\n");
+		printf("æ²¡æœ‰æŸ¥è¯¢åˆ°å¯¹åº”çš„æ•°æ®!!!\n");
 		return -1;
 	}
 
