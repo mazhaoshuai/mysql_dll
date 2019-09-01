@@ -571,7 +571,7 @@ int selete_data(char* tableName, Field**&field)
 	return 0;
 }
 
-/*测试代码
+/*测试代码//此函数为最初版本。
 char**results;
 char**field = new char*[4];
 field[0] = new char[64];
