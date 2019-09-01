@@ -9,7 +9,7 @@ int main()
 	int error = 0;
 	error = sql_connect(fileName);
 
-	//Ôö¼Ó
+	//å¢åŠ æ•°æ®
 	Field** field = NULL;
 	new_field(field, 3);
 	double value=3.12;
@@ -17,22 +17,22 @@ int main()
 	char* get_time="2019-06-20 16:37:51";
 	init_field(field[0], "equipment_id", equipment_id, String);
 	init_field(field[1], "transmission_time", get_time, String);
-	init_field(field[2], "latitude", &value, Float);
+	init_field(field[2], "latitude", &value, Double);
 	insert_data("tablue_name", field);
 	free_field(field);
 	
-	//ĞŞ¸Ä
+	//æ›´æ–°æ•°æ®
 	new_field(field, 3);
 	int id = 25;
 	equipment_id = "defg";
-	double latitude = 3.14;
+	float latitude = 3.14;
 	init_field(field[0], "id", &id, IntId);
 	init_field(field[1], "equipment_id", equipment_id, String);
 	init_field(field[2], "latitude", &latitude, Float);
 	update_data("tablue_name", field);
 	free_field(field);
 
-	//²éÑ¯
+	//æŸ¥è¯¢æ•°æ®
 	new_field(field, 4);
 	init_field(field[0], "equipment_id", NULL, String);
 	init_field(field[1], "id", &id, IntId);
@@ -56,7 +56,7 @@ int main()
 	}
 	free_field(field);
 
-	//É¾³ı
+	//åˆ é™¤æ•°æ®
 	new_field(field, 1);
 	init_field(field[0], "id", &id, IntId);
 	delete_data("tablue_name", field[0]);
