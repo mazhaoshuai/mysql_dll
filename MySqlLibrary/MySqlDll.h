@@ -1,3 +1,13 @@
+/*************************************************************************
+**									**
+** Copyright (C) 2019 The Future Company Ltd.				**
+** Author:   Ma zhaoShuai, 17090833800@163.com				**
+** Contact: https://blog.csdn.net/weixin_41913666			**
+**									**
+** mysql工具类库							     **
+**									**
+**                                                   Date 20190727	**
+*************************************************************************/
 #ifndef _MYSQL_DLL_H_
 #define _MYSQL_DLL_H_
 
