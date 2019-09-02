@@ -1,0 +1,25 @@
+库在windows环境编译，理论支持linux。用的都是标准库并做了宏适配。
+库运行环境visual studio 2013或更高。
+-------mysql-------
+D:mysql\bin\mysql.exe  Ver 15.1 Distrib 10.1.37-MariaDB, for Win32 (AMD64)
+
+Connection id:          1686
+Current database:
+Current user:           DELL@localhost
+SSL:                    Not in use
+Using delimiter:        ;
+Server:                 MariaDB
+Server version:         10.1.37-MariaDB mariadb.org binary distribution
+Protocol version:       10
+Connection:             localhost via TCP/IP
+Server characterset:    utf8
+Db     characterset:    utf8
+Client characterset:    gbk
+Conn.  characterset:    gbk
+TCP port:               3306
+Uptime:                 6 days 17 hours 7 min 50 sec
+
+Threads: 1  Questions: 12056  Slow queries: 0  Opens: 488  Flush tables: 1  Open tables: 480  Queries per second avg: 0.020
+--------mysql------
+
+mySqlConfig.ini 配置文件放到根目录。
